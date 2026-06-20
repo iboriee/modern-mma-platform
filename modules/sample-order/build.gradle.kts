@@ -11,4 +11,6 @@ dependencies {
     api(project(":framework:framework-jpa"))
 
     runtimeOnly("com.h2database:h2")
+
+    testImplementation(testFixtures(project(":framework:framework-test")))
 }
