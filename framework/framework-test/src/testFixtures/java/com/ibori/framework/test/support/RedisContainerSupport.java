@@ -5,12 +5,18 @@ import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-@Testcontainers
+//@Testcontainers
 public interface RedisContainerSupport {
 
-    @Container
+    //@Container
     @ServiceConnection(name = "redis")
     GenericContainer<?> VALKEY = new GenericContainer<>("valkey/valkey:8-alpine")
             .withExposedPorts(6379)
             .withReuse(true);
+
+    static void startContainer() {
+        if (!VALKEY.isRunning()) {
+            VALKEY.start();
+        }
+    }
 }
