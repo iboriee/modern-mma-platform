@@ -1,1 +1,2 @@
 com.ibori.framework.observability.ObservabilityConfig
+com.ibori.framework.observability.config.ObservabilityAsyncConfig

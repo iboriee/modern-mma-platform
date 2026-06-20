@@ -5,7 +5,7 @@
 ![Gradle](https://img.shields.io/badge/Gradle-9.x-02303A?style=flat-square&logo=gradle)
 ![Architecture](https://img.shields.io/badge/Architecture-Modular_Monolith_%2F_Multi--Module-blue?style=flat-square)
 
-> 최신 생태계(Java 21, Spring Boot 3.5)를 기반으로 구축한 **표준 프레임워크 및 플랫폼**입니다.
+> 최신 생태계(Java 21, Spring Boot 3.5)를 기반으로 구축한 **사내 표준 프레임워크 및 플랫폼**입니다.
 > 이름의 **MMA**는 **M**odular **M**onolith **A**rchitecture와 **M**ulti-Module **A**rchitecture를 동시에 의미합니다.
 > 처음에는 모듈러 모놀리스로 단일 배포하되, 도메인 경계를 모듈 단위로 명확히 분리해두어
 > 필요 시 개별 마이크로서비스로 분리 배포할 수 있는 유연한 구조를 지향합니다.
@@ -37,7 +37,7 @@ modern-mma-platform/
  │    ├── framework-observability/   # Tracing + Metrics (framework-logging 기반)
  │    ├── framework-cache/           # Redis(Valkey) 캐시 설정
  │    ├── framework-kafka/           # Kafka Producer/Consumer 공통 설정, DLT 처리
- │    ├── framework-test/            # 모듈 테스트 지원
+ │    ├── framework-test/            # Testcontainers 기반 테스트 지원
  │    └── framework-security/        # JWT 발급/검증, Refresh Token Rotation, Spring Security 통합
  │
  ├── 📁 modules/                     # 도메인 모듈 (Modular Monolith 경계 단위)
@@ -73,6 +73,36 @@ business → framework-kafka
 ```
 
 `framework/` 내부 모듈 간에도 동일한 원칙이 적용됩니다. 예를 들어 `framework-exception`은 `framework-web`을 알지 못하며, 그 반대 방향(`framework-web → framework-exception`)만 허용됩니다.
+
+## Framework Module Dependency Graph
+
+`framework/` 내 10개 모듈의 실제 의존 관계입니다. 화살표는 "의존한다(→)"를 의미하며, 화살표 없는 모듈(`framework-core`, `framework-response`, `framework-jpa`, `framework-logging`, `framework-cache`, `framework-kafka`)은 다른 framework 모듈에 의존하지 않는 독립 모듈입니다.
+
+```text
+framework-core            (독립 — 순수 유틸/공통 포맷)
+framework-response        (독립 — API 응답 규격)
+framework-exception       (독립 — ErrorCode, BusinessException. Spring-web 코어만 가볍게 사용)
+framework-jpa             (독립 — JPA Auditing, BaseEntity)
+framework-logging         (독립 — 구조화 로그, 배치 환경에서도 단독 사용 가능)
+framework-cache           (독립 — Redis/Valkey 캐시 설정)
+framework-kafka           (독립 — Kafka 공통 설정, DLT 처리)
+
+framework-observability ──→ framework-logging
+                             (Tracing/Metrics는 로그 컨텍스트를 공유해야 하므로 의존)
+
+framework-web ──┬──→ framework-response
+                 └──→ framework-exception
+                 (GlobalExceptionHandler가 두 모듈을 조합해 HTTP 응답으로 변환)
+
+framework-security ──┬──→ framework-exception   (implementation)
+                       └──→ framework-cache       (compileOnly — Redis 있을 때만 RTR 저장소 자동 활성화)
+```
+
+### 설계 원칙
+
+- **`framework-exception`은 어떤 framework 모듈에도 의존하지 않습니다.** 가장 하위 계층으로, HTTP/web 지식이 필요한 로직(`GlobalExceptionHandler`)은 `framework-web`으로 분리되어 있습니다.
+- **`framework-security`의 `framework-cache` 의존은 `compileOnly`입니다.** Refresh Token 저장소(`RefreshTokenStore`)의 Redis 구현체는 classpath에 Redis 관련 클래스가 있을 때만(`@ConditionalOnClass`) 자동 활성화되며, 다른 저장소로 교체하더라도 `framework-security` 자체는 영향받지 않습니다.
+- **`framework-logging`은 독립적으로 사용 가능합니다.** 배치성 워크로드는 `framework-observability` 없이 `framework-logging`만 가져다 쓸 수 있습니다.
 
 ## Core Technology Stack
 
@@ -114,3 +144,46 @@ business → framework-kafka
 - [ ] Http Interface 및 RestClient 기반 모듈 간 통신 표준화
 - [ ] Micrometer Tracing OTLP 연동
 - [ ] SonarQube 정적 코드 분석 연동
+
+## Framework Module Dependency Graph
+
+`framework/` 내부 모듈 간 실제 의존 관계입니다. 화살표는 `→ 의존한다`를 의미하며, 화살표 반대 방향의 의존은 허용하지 않습니다.
+
+```text
+framework-core   (순수, 의존 없음)
+
+framework-response   (jackson만 의존, 순수)
+
+framework-exception   (spring-web, validation만 의존, 순수)
+        ↑
+framework-web   (response + exception 조합, GlobalExceptionHandler 보유)
+
+framework-logging   (독립, web은 compileOnly로 선택적)
+        ↑
+framework-observability   (logging 기반 + tracing/metrics)
+
+framework-jpa   (독립)
+
+framework-kafka   (독립)
+
+framework-cache   (독립, Redis/Valkey)
+        ↑ (compileOnly — 있을 때만 자동 활성화)
+framework-security   (exception 의존 + JWT/RTR, cache는 선택적 연동)
+```
+
+### 모듈별 한 줄 요약
+
+| 모듈 | 의존 대상 | 비고 |
+|---|---|---|
+| `framework-core` | 없음 | 공통 유틸, 가장 하위 |
+| `framework-response` | jackson | API 공통 응답 포맷 |
+| `framework-exception` | spring-web, validation | 예외 타입/에러코드만, web 모름 |
+| `framework-web` | response, exception | 핸들러는 여기서만 처리 |
+| `framework-logging` | (web은 선택적) | 배치 환경에서도 단독 사용 가능 |
+| `framework-observability` | logging | tracing + metrics |
+| `framework-jpa` | 없음 | Auditing, BaseEntity |
+| `framework-kafka` | 없음 | DLT 처리 포함 |
+| `framework-cache` | 없음 | Redis(Valkey) |
+| `framework-security` | exception (필수, implementation), cache (선택) | exception은 내부용이라 외부 비노출 / cache 없으면 RefreshTokenStore 직접 구현 필요 |
+
+> 새 framework 모듈을 추가할 때는 이 표를 먼저 업데이트하고, 의존 방향이 위 규칙(상위 → 하위만 허용)을 지키는지 확인해주세요.

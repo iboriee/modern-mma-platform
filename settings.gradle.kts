@@ -20,6 +20,7 @@ include(":framework:framework-observability")
 include(":framework:framework-kafka")
 include(":framework:framework-cache")
 include(":framework:framework-security")
+include(":framework:framework-test")
 // todo: framework lib 추가
 
 // 샘플 도메인 모듈 (모듈러 모놀리스 예시)

@@ -6,7 +6,7 @@ plugins {
 
 dependencies {
     implementation(platform("org.springframework.boot:spring-boot-dependencies:3.5.0"))
-
+    implementation(platform("org.springframework.modulith:spring-modulith-bom:1.3.0"))
     implementation("org.springframework.boot:spring-boot-starter")
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
