@@ -13,7 +13,7 @@ public class JwtProperties {
     private Duration accessTokenTtl  = Duration.ofMinutes(30);
     private Duration refreshTokenTtl  = Duration.ofDays(14);
 
-    private String issuer = "modern-msa-platform";
+    private String issuer = "modern-mma-platform";
 
     public void setSecret(String secret) {
         if (secret == null || secret.isBlank()) {
