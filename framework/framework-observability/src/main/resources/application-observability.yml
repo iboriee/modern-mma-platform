@@ -1,0 +1,12 @@
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health, info, prometheus" # Actuator 엔드포인트 개방
+  tracing:
+    sampling:
+      probability: 1.0 # 100% 모든 요청을 추적 # todo: 운영 시 조절 필요
+
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%15.15t] %clr(%-5level) %clr(%-40.40logger{39}){cyan} [%X{traceId:-},%X{spanId:-}] : %m%n"

@@ -1,0 +1,8 @@
+ibori:
+  framework:
+    security:
+      jwt:
+        jwtSecretKey: default-secret-key-ibori-framework-must-be-changed-in-prod
+        accessTokenTtl: 3600000
+        refreshTokenTtl: 1209600000
+        issuer: modern-msa-platform

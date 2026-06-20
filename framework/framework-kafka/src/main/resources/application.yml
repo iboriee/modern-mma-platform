@@ -1,0 +1,6 @@
+ibori:
+  framework:
+    kafka:
+      backoff:
+        interval: 1000
+        max-attempts: 3

@@ -1,0 +1,3 @@
+com.ibori.framework.security.config.SecurityFrameworkAutoConfiguration
+com.ibori.framework.security.config.SecurityFilterChainAutoConfiguration
+com.ibori.framework.security.token.redis.RedisTokenStoreAutoConfiguration
