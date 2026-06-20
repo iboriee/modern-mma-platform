@@ -22,6 +22,8 @@ dependencies {
     val springBootBom = platform("org.springframework.boot:spring-boot-dependencies:3.5.0")
     implementation(springBootBom)
     annotationProcessor(springBootBom)
+    testImplementation(springBootBom)
+    testAnnotationProcessor(springBootBom)
 
     testCompileOnly("org.projectlombok:lombok")
     testAnnotationProcessor("org.projectlombok:lombok")

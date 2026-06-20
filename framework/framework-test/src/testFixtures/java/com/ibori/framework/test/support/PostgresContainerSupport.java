@@ -1,14 +1,15 @@
+package com.ibori.framework.test.support;
+
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
-import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 @Testcontainers
-public interface RedisContainerSupport {
+public interface PostgresContainerSupport {
 
     @Container
-    @ServiceConnection(name = "redis")
-    GenericContainer<?> VALKEY = new GenericContainer<>("valkey/valkey:8-alpine")
-            .withExposedPorts(6379)
+    @ServiceConnection
+    PostgreSQLContainer<?> POSTGRES = new PostgreSQLContainer<>("postgres:17-alpine")
             .withReuse(true);
 }

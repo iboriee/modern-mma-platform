@@ -9,8 +9,9 @@ dependencies {
     api(project(":framework:framework-exception"))
     api(project(":framework:framework-web"))
     api(project(":framework:framework-jpa"))
-
-    runtimeOnly("com.h2database:h2")
+    api(project(":framework:framework-kafka"))
+    api(project(":framework:framework-cache"))
 
     testImplementation(testFixtures(project(":framework:framework-test")))
+    testRuntimeOnly("com.h2database:h2")
 }
