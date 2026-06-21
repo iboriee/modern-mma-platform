@@ -5,6 +5,6 @@ plugins {
 
 dependencies {
 
+    implementation(project(":framework:framework-core"))
     api(libs.spring.boot.starter.kafka)
-    api(libs.jackson.databind)
 }

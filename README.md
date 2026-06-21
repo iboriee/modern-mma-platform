@@ -182,8 +182,8 @@ framework-security   (exception 의존 + JWT/RTR, cache는 선택적 연동)
 | `framework-logging` | (web은 선택적) | 배치 환경에서도 단독 사용 가능 |
 | `framework-observability` | logging | tracing + metrics |
 | `framework-jpa` | 없음 | Auditing, BaseEntity |
-| `framework-kafka` | 없음 | DLT 처리 포함 |
-| `framework-cache` | 없음 | Redis(Valkey) |
+| `framework-kafka` | core | DLT 처리 포함 |
+| `framework-cache` | core | Redis(Valkey) |
 | `framework-security` | exception (필수, implementation), cache (선택) | exception은 내부용이라 외부 비노출 / cache 없으면 RefreshTokenStore 직접 구현 필요 |
 
 > 새 framework 모듈을 추가할 때는 이 표를 먼저 업데이트하고, 의존 방향이 위 규칙(상위 → 하위만 허용)을 지키는지 확인해주세요.

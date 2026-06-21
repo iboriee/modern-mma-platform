@@ -4,8 +4,8 @@ plugins {
 
 dependencies {
 
-    api(libs.spring.modulith.starter.core)
-    implementation(libs.jackson.databind)
-
+    api(libs.jackson.databind)
+    api(libs.jackson.annotations)
+    api(libs.jackson.datatype)
 
 }

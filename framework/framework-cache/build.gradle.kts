@@ -5,7 +5,8 @@ plugins {
 
 dependencies {
 
+    implementation(project(":framework:framework-core"))
     api(libs.spring.boot.starter.cache)
-    api(libs.spring.boot.starter.redis)
-    api(libs.spring.boot.configuration.processor)
+    api(libs.spring.boot.starter.data.redis)
+    annotationProcessor(libs.spring.boot.configuration.processor)
 }

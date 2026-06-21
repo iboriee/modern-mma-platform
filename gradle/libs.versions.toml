@@ -11,6 +11,9 @@ postgresql = "42.7.4"
 [libraries]
 jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }
 jackson-annotations = { module = "com.fasterxml.jackson.core:jackson-annotations", version.ref = "jackson" }
+jackson-datatype = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310" }
+
+
 lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }
 
 spring-modulith-starter-core = { module = "org.springframework.modulith:spring-modulith-starter-core" }
@@ -23,7 +26,7 @@ spring-boot-starter-validation = { module = "org.springframework.boot:spring-boo
 spring-boot-starter-kafka = { module = "org.springframework.kafka:spring-kafka" }
 spring-kafka-test= { module = "org.springframework.kafka:spring-kafka-test" }
 spring-boot-starter-cache = { module = "org.springframework.boot:spring-boot-starter-cache" }
-spring-boot-starter-redis = { module = "org.springframework.boot:spring-boot-starter-data-redis" }
+spring-boot-starter-data-redis = { module = "org.springframework.boot:spring-boot-starter-data-redis" }
 spring-boot-configuration-processor = { module = "org.springframework.boot:spring-boot-configuration-processor" }
 spring-boot-starter-security = { module = "org.springframework.boot:spring-boot-starter-security" }
 

@@ -1,12 +1,10 @@
 plugins {
     id("library-convention")
-    id("spring-boot-convention")
+    id("modulith-convention")
 }
 
 dependencies {
-    api(project(":framework:framework-core"))
-    api(project(":framework:framework-response"))
-    api(project(":framework:framework-exception"))
+
     api(project(":framework:framework-web"))
     api(project(":framework:framework-jpa"))
     api(project(":framework:framework-kafka"))

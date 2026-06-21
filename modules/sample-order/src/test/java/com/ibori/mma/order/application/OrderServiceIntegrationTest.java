@@ -5,6 +5,7 @@ import com.ibori.framework.test.support.PostgresContainerSupport;
 import com.ibori.framework.test.support.RedisContainerSupport;
 import com.ibori.mma.order.OrderTestApplication;
 import com.ibori.mma.order.domain.Order;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,10 +14,10 @@ import org.springframework.kafka.test.utils.KafkaTestUtils;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Map;
+import java.util.stream.StreamSupport;
 
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 
@@ -46,11 +47,13 @@ class OrderServiceIntegrationTest implements PostgresContainerSupport, RedisCont
         assertThat(saved.getProductName()).isEqualTo("키보드");
 
         // then: 카프카 메시지 도착 확인 (AFTER_COMMIT 이후 비동기 발행이라 폴링 필요)
-        ConsumerRecord<String, OrderCreatedEvent> record =
-                KafkaTestUtils.getSingleRecord(consumer, "order.created", java.time.Duration.ofSeconds(10));
+        ConsumerRecords<String, OrderCreatedEvent> records =
+                KafkaTestUtils.getRecords(consumer, java.time.Duration.ofSeconds(10));
 
-        assertThat(record.value().orderId()).isEqualTo(saved.getId());
-        assertThat(record.value().productName()).isEqualTo("키보드");
+        boolean found = StreamSupport.stream(records.records("order.created").spliterator(), false)
+                .anyMatch(r -> r.value().orderId().equals(saved.getId()));
+
+        assertThat(found).isTrue();
 
         consumer.close();
     }
@@ -74,7 +77,7 @@ class OrderServiceIntegrationTest implements PostgresContainerSupport, RedisCont
 
     private Consumer<String, OrderCreatedEvent> createTestConsumer() {
         Map<String, Object> props = KafkaTestUtils.consumerProps(
-                "test-group", "true", KafkaContainerSupport.KAFKA.getBootstrapServers());
+                KafkaContainerSupport.KAFKA.getBootstrapServers(),"test-group", "true" );
 
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);

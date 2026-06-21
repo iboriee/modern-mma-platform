@@ -10,7 +10,6 @@ java {
 
 tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
-    // Java 21 컴파일러 옵션 (파라미터 이름 유지 등)
     options.compilerArgs.addAll(listOf("-parameters"))
 }
 
@@ -18,18 +17,18 @@ repositories {
     mavenCentral()
 }
 
+val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
+
 dependencies {
-    val springBootBom = platform("org.springframework.boot:spring-boot-dependencies:3.5.0")
-    implementation(springBootBom)
-    annotationProcessor(springBootBom)
-    testImplementation(springBootBom)
-    testAnnotationProcessor(springBootBom)
+    val lombokVersion = "${libs.findVersion("lombok").get()}"
+    compileOnly("org.projectlombok:lombok:$lombokVersion")
+    annotationProcessor("org.projectlombok:lombok:$lombokVersion")
+    testCompileOnly("org.projectlombok:lombok:$lombokVersion")
+    testAnnotationProcessor("org.projectlombok:lombok:$lombokVersion")
 
-    testCompileOnly("org.projectlombok:lombok")
-    testAnnotationProcessor("org.projectlombok:lombok")
-
-    testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.11.0")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
 }
 
 tasks.withType<Test> {

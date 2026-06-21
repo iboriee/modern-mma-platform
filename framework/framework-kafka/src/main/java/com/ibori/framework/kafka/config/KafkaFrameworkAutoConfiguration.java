@@ -1,19 +1,26 @@
 package com.ibori.framework.kafka.config;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.producer.ProducerConfig;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.kafka.KafkaConnectionDetails;
+import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
+import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.listener.DeadLetterPublishingRecoverer;
 import org.springframework.kafka.listener.DefaultErrorHandler;
 import org.springframework.kafka.support.LoggingProducerListener;
 import org.springframework.kafka.support.converter.JsonMessageConverter;
+import org.springframework.kafka.support.serializer.JsonSerializer;
 import org.springframework.util.backoff.FixedBackOff;
+
+import java.util.Map;
 
 @Slf4j
 @EnableKafka
@@ -35,13 +42,24 @@ public class KafkaFrameworkAutoConfiguration {
         return new JsonMessageConverter();
     }
 
+    @Bean
+    public ProducerFactory<Object, Object> producerFactory(
+            KafkaProperties properties,
+            KafkaConnectionDetails connectionDetails) {
+        Map<String, Object> configs = properties.buildProducerProperties(null);
+        configs.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, connectionDetails.getBootstrapServers());
+
+        configs.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+        return new DefaultKafkaProducerFactory<>(configs);
+    }
+
     /**
      *  프로듀서 설정
      */
     @Bean
     public KafkaTemplate<Object, Object> kafkaTemplate(ProducerFactory<Object, Object> producerFactory) {
         KafkaTemplate<Object, Object> template = new KafkaTemplate<>(producerFactory);
-        template.setMessageConverter(jsonMessageConverter());
+        //template.setMessageConverter(jsonMessageConverter());
         template.setProducerListener(new LoggingProducerListener<>());
         template.setObservationEnabled(true);
         return template;
