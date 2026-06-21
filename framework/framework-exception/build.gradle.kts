@@ -5,7 +5,7 @@ plugins {
 
 dependencies {
 
-    implementation("org.springframework:spring-web")
-    implementation(libs.spring.boot.starter.validation)
+    api("org.springframework:spring-web")
+    api(libs.spring.boot.starter.validation)
 
 }
