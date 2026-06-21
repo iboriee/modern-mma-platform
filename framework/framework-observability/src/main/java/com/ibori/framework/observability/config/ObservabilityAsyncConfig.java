@@ -16,14 +16,14 @@ public class ObservabilityAsyncConfig {
     /**
      * TaskDecorator
      * 비동기 스레드가 실행되기 직전과 직후에 개입해서,
-     * 부모 스레드의 로깅 컨텍스트(MDC - TraceId 등)를 자식 스레드로 복사.
+     * 부모 스레드의 로깅 컨텍스트를 자식 스레드로 복사.
      */
     @Bean
     public TaskDecorator micrometerContextTaskDecorator() {
+        var snapshotFactory = ContextSnapshotFactory.builder().build();
         return runnable -> {
-            var snapshotFactory = ContextSnapshotFactory.builder().build();
+            var snapshot = snapshotFactory.captureAll();
             return () -> {
-                var snapshot = snapshotFactory.captureAll();
                 try( var scope = snapshot.setThreadLocals()) {
                     runnable.run();
                 }
