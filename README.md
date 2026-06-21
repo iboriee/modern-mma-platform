@@ -24,6 +24,8 @@
 modern-mma-platform/
  ├── 📁 build-logic/                 # 빌드 컨벤션 플러그인 (의존성/버전 중앙 제어)
  │    ├── java-convention            # Java 21 공통 설정
+ │    ├── modulith-convention        # modulith 설정
+ │    ├── spring-dependency-convention  # Spring Boot BOM 설정
  │    ├── spring-boot-convention     # Spring Boot 3.5 기본 설정
  │    └── library-convention         # 프레임워크 라이브러리용 (BootJar 비활성화 등)
  │
