@@ -21,19 +21,20 @@ public class RedisRefreshTokenStore implements RefreshTokenStore {
 
     @Override
     public void save(String userId, String deviceId, String refreshTokenHash, Duration ttl) {
-        String key = KEY_PREFIX + userId;
+        String key = key(userId);
         redisTemplate.opsForHash().put(key, deviceId, refreshTokenHash);
         redisTemplate.expire(key, ttl);
     }
 
     @Override
     public Optional<String> find(String userId, String deviceId) {
-        return Optional.ofNullable(redisTemplate.opsForValue().get(key(userId, deviceId)));
+        Object value = redisTemplate.opsForHash().get(key(userId), deviceId);
+        return Optional.ofNullable((String) value);
     }
 
     @Override
     public void delete(String userId, String deviceId) {
-        redisTemplate.delete(key(userId, deviceId));
+        redisTemplate.opsForHash().delete(key(userId), deviceId);
     }
 
     /**
@@ -42,10 +43,10 @@ public class RedisRefreshTokenStore implements RefreshTokenStore {
      */
     @Override
     public void deleteAll(String userId) {
-        redisTemplate.delete(KEY_PREFIX + userId);
+        redisTemplate.delete(key(userId));
     }
 
-    private String key(String userId, String deviceId) {
-        return KEY_PREFIX + userId + ":" + deviceId;
+    private String key(String userId) {
+        return KEY_PREFIX + userId;
     }
 }

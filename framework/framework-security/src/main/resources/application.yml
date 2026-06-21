@@ -2,7 +2,7 @@ ibori:
   framework:
     security:
       jwt:
-        jwtSecretKey: default-secret-key-ibori-framework-must-be-changed-in-prod
-        accessTokenTtl: 3600000
-        refreshTokenTtl: 1209600000
+        secret: default-secret-key-ibori-framework-must-be-changed-in-prod
+        accessTokenTtl: 30m
+        refreshTokenTtl: 14d
         issuer: modern-mma-platform
