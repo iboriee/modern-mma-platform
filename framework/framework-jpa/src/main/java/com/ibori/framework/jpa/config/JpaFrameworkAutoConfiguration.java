@@ -1,7 +1,9 @@
 package com.ibori.framework.jpa.config;
 
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
@@ -11,6 +13,7 @@ import java.util.Optional;
 
 @AutoConfiguration
 @ConditionalOnBean(DataSource.class)
+@AutoConfigureAfter(DataSourceAutoConfiguration.class)
 @EnableJpaAuditing(auditorAwareRef = "auditorProvider")
 public class JpaFrameworkAutoConfiguration {
 

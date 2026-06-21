@@ -19,4 +19,5 @@ dependencies {
     testFixturesApi(libs.test.postgresql)
     testFixturesApi(libs.test.kafka)
 
+    testFixturesApi(libs.postgresql.driver)
 }

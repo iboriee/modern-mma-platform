@@ -39,8 +39,8 @@ public class KafkaFrameworkAutoConfiguration {
      *  프로듀서 설정
      */
     @Bean
-    public KafkaTemplate<String, Object> kafkaTemplate(ProducerFactory<String, Object> producerFactory) {
-        KafkaTemplate<String, Object> template = new KafkaTemplate<>(producerFactory);
+    public KafkaTemplate<Object, Object> kafkaTemplate(ProducerFactory<Object, Object> producerFactory) {
+        KafkaTemplate<Object, Object> template = new KafkaTemplate<>(producerFactory);
         template.setMessageConverter(jsonMessageConverter());
         template.setProducerListener(new LoggingProducerListener<>());
         template.setObservationEnabled(true);
@@ -51,11 +51,11 @@ public class KafkaFrameworkAutoConfiguration {
      *  컨슈머 설정
      */
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, Object> kafkaListenerContainerFactory(
-            ConsumerFactory<String, Object> consumerFactory,
-            KafkaTemplate<String, Object> kafkaTemplate) {
+    public ConcurrentKafkaListenerContainerFactory<Object, Object> kafkaListenerContainerFactory(
+            ConsumerFactory<Object, Object> consumerFactory,
+            KafkaTemplate<Object, Object> kafkaTemplate) {
 
-        ConcurrentKafkaListenerContainerFactory<String, Object> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        ConcurrentKafkaListenerContainerFactory<Object, Object> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory);
         factory.setRecordMessageConverter(jsonMessageConverter());
 

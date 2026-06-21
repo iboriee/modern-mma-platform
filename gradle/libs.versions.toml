@@ -6,6 +6,7 @@ jackson = "2.18.2"
 lombok = "1.18.34"
 logback = "7.4"
 jjwt = "0.12.6"
+postgresql = "42.7.4"
 
 [libraries]
 jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }
@@ -26,7 +27,7 @@ spring-boot-starter-redis = { module = "org.springframework.boot:spring-boot-sta
 spring-boot-configuration-processor = { module = "org.springframework.boot:spring-boot-configuration-processor" }
 spring-boot-starter-security = { module = "org.springframework.boot:spring-boot-starter-security" }
 
-
+postgresql-driver = { module = "org.postgresql:postgresql", version.ref = "postgresql" }
 
 logstash-logback-encoder = { module = "net.logstash.logback:logstash-logback-encoder", version.ref = "logback" }
 
@@ -34,10 +35,10 @@ jjwt-api = { module = "io.jsonwebtoken:jjwt-api", version.ref = "jjwt" }
 jjwt-impl = { module = "io.jsonwebtoken:jjwt-impl", version.ref = "jjwt" }
 jjwt-jackson = { module = "io.jsonwebtoken:jjwt-jackson", version.ref = "jjwt" }
 
-junit-jupiter = { module = "org.testcontainers:junit-jupiter" }
+junit-jupiter = { module = "org.testcontainers:junit-jupiter", version = "1.20.0" }
 
-test-postgresql= { module = "org.testcontainers:postgresql" }
-test-kafka= { module = "org.testcontainers:kafka" }
+test-postgresql= { module = "org.testcontainers:postgresql", version = "1.20.0" }
+test-kafka= { module = "org.testcontainers:kafka" , version = "1.20.0"}
 
 
 [plugins]
