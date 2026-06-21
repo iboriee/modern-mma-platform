@@ -180,20 +180,6 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * 존재하지 않는 URL (404)
-     */
-    @ExceptionHandler(NoHandlerFoundException.class)
-    protected ResponseEntity<ApiResponse<?>> handleNoHandlerFoundException(NoHandlerFoundException e) {
-        log.warn("NoHandlerFoundException Occurred: {}", e.getMessage());
-
-        ErrorCode errorCode = CommonErrorCode.NOT_FOUND;
-
-        return ResponseEntity
-                .status(errorCode.getStatus())
-                .body(ApiResponse.error(errorCode.getCode(), errorCode.getMessage()));
-    }
-
-    /**
      * 시스템 최상위 예외 처리 (NullPointerException 등 500 에러)
      */
     @ExceptionHandler(Exception.class)

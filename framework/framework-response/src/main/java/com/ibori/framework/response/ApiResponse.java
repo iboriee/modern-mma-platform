@@ -6,7 +6,7 @@ import java.util.List;
 
 /**
  * API 공통 응답 포맷
- * @param <T> 응답 데이터 타입
+ * @param <T> 응답 데이터 타입 todo: timezone 고려(클라우드 환경)
  */
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -54,7 +54,7 @@ public record ApiResponse<T>(
     }
 
     // 성공 응답 (데이터가 없는 경우 - Delete, Update 등)
-    public static ApiResponse<?> successNoData() {
+    public static ApiResponse<Void> successNoData() {
         return ApiResponse.success(null);
     }
 
@@ -83,7 +83,7 @@ public record ApiResponse<T>(
     }
 
     // vaildation 실패 응답
-    public static ApiResponse<?> error(String code, String message, List<ValidationError> errors) {
+    public static ApiResponse<Void> error(String code, String message, List<ValidationError> errors) {
         return new ApiResponse<>(
                 false,
                 code, message,

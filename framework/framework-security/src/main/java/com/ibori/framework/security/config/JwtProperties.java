@@ -16,8 +16,8 @@ public class JwtProperties {
     private String issuer = "modern-mma-platform";
 
     public void setSecret(String secret) {
-        if (secret == null || secret.isBlank()) {
-            throw new IllegalArgumentException("ibori.framework.security.jwt.secret must not be blank");
+        if (secret == null || secret.isBlank() || secret.length() < 32) {
+            throw new IllegalArgumentException("ibori.framework.security.jwt.secret must not be blank and requires at least 32 bytes.");
         }
         this.secret = secret;
     }

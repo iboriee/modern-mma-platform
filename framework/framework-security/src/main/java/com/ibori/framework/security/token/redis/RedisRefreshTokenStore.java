@@ -21,7 +21,9 @@ public class RedisRefreshTokenStore implements RefreshTokenStore {
 
     @Override
     public void save(String userId, String deviceId, String refreshTokenHash, Duration ttl) {
-        redisTemplate.opsForValue().set(key(userId, deviceId), refreshTokenHash, ttl);
+        String key = KEY_PREFIX + userId;
+        redisTemplate.opsForHash().put(key, deviceId, refreshTokenHash);
+        redisTemplate.expire(key, ttl);
     }
 
     @Override
@@ -40,26 +42,8 @@ public class RedisRefreshTokenStore implements RefreshTokenStore {
      */
     @Override
     public void deleteAll(String userId) {
-        var keys = redisTemplate.keys(KEY_PREFIX + userId + ":*");
-        if (keys != null && !keys.isEmpty()) {
-            redisTemplate.delete(keys);
-        }
+        redisTemplate.delete(KEY_PREFIX + userId);
     }
-/*
-    @Override
-    public void deleteAll(String userId) {
-        String pattern = KEY_PREFIX + userId + ":*";
-        ScanOptions options = ScanOptions.scanOptions().match(pattern).count(100).build();
-
-        try (Cursor<byte[]> cursor = redisTemplate.execute((RedisCallback<? extends Cursor<byte[]>>) <Cursor<byte[]>>) connection ->
-                connection.scan(options))) {
-
-            while (cursor.hasNext()) {
-                redisTemplate.delete(new String(cursor.next()));
-            }
-        }
-    }
-*/
 
     private String key(String userId, String deviceId) {
         return KEY_PREFIX + userId + ":" + deviceId;

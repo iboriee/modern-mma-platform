@@ -1,5 +1,6 @@
 package com.ibori.framework.observability.config;
 
+import io.micrometer.context.ContextSnapshotFactory;
 import org.slf4j.MDC;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -18,27 +19,15 @@ public class ObservabilityAsyncConfig {
      * 부모 스레드의 로깅 컨텍스트(MDC - TraceId 등)를 자식 스레드로 복사.
      */
     @Bean
-    public TaskDecorator mdcTaskDecorator() {
+    public TaskDecorator micrometerContextTaskDecorator() {
         return runnable -> {
-            Map<String, String> contextMap = MDC.getCopyOfContextMap();
-
-            Runnable wrappedRunnable = () -> {
-                try {
-
-                    if (contextMap != null) {
-                        MDC.setContextMap(contextMap);
-                    }
-
+            var snapshotFactory = ContextSnapshotFactory.builder().build();
+            return () -> {
+                var snapshot = snapshotFactory.captureAll();
+                try( var scope = snapshot.setThreadLocals()) {
                     runnable.run();
-
-                } finally {
-
-                    MDC.clear();
-
                 }
             };
-
-            return wrappedRunnable;
-         };
+        };
     }
 }

@@ -36,18 +36,20 @@ public class RequestLoggingFilter extends OncePerRequestFilter {
         } finally {
             long duration = System.currentTimeMillis() - startTime;
 
-            String requestBody = getPayload(cachingRequest.getContentAsByteArray(), cachingRequest.getCharacterEncoding());
-            String responseBody = getPayload(cachingResponse.getContentAsByteArray(), cachingResponse.getCharacterEncoding());
+            if( cachingResponse.getStatus() >= 400 ) {
+                String requestBody = getPayload(cachingRequest.getContentAsByteArray(), cachingRequest.getCharacterEncoding());
+                String responseBody = getPayload(cachingResponse.getContentAsByteArray(), cachingResponse.getCharacterEncoding());
 
-            log.info(API_REQUEST_LOG_FORMAT,
-                    requestId,
-                    request.getMethod(),
-                    request.getRequestURI(),
-                    requestBody,
-                    cachingResponse.getStatus(),
-                    responseBody,
-                    duration
-            );
+                log.info(API_REQUEST_LOG_FORMAT,
+                        requestId,
+                        request.getMethod(),
+                        request.getRequestURI(),
+                        requestBody,
+                        cachingResponse.getStatus(),
+                        responseBody,
+                        duration
+                );
+            }
 
             MDC.clear();
         }

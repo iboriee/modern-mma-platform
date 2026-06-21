@@ -18,6 +18,4 @@ public class ObservabilityConfig {
         log.info("[iBori Framework] Observability (Micrometer Tracing OTLP) Auto-Configured!");
     }
 
-    // todo: TraceId 주입 추가
-
 }
