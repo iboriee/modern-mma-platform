@@ -5,10 +5,8 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-//@Testcontainers
 public interface PostgresContainerSupport {
 
-    //@Container
     @ServiceConnection
     PostgreSQLContainer<?> POSTGRES = new PostgreSQLContainer<>("postgres:17-alpine")
             .withReuse(true);

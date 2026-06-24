@@ -11,6 +11,7 @@ dependencies {
 
     testFixturesApi(libs.spring.kafka.test)
     testFixturesApi(libs.test.kafka)
+    testFixturesApi(libs.test.localstack)
 
     testFixturesApi(libs.junit.jupiter)
 
