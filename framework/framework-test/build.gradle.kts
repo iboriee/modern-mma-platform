@@ -16,6 +16,8 @@ dependencies {
     testFixturesApi(libs.junit.jupiter)
 
     testFixturesApi(libs.test.postgresql)
+    testFixturesApi(libs.spring.boot.security.test)
+
     testFixturesApi(libs.postgresql.driver)
 
 }

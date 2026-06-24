@@ -7,7 +7,6 @@ import java.time.Duration;
 @ConfigurationProperties(prefix = "ibori.framework.security.jwt")
 public class JwtProperties {
 
-
     private String secret;
 
     private Duration accessTokenTtl  = Duration.ofMinutes(30);
@@ -16,9 +15,15 @@ public class JwtProperties {
     private String issuer = "modern-mma-platform";
 
     public void setSecret(String secret) {
-        if (secret == null || secret.isBlank() || secret.length() < 32) {
-            throw new IllegalArgumentException("ibori.framework.security.jwt.secret must not be blank and requires at least 32 bytes.");
+        if (secret == null || secret.isBlank()) {
+            throw new IllegalArgumentException(
+                    "ibori.framework.security.jwt.secret must not be blank...");
         }
+        if (secret.getBytes().length < 32) {
+            throw new IllegalArgumentException(
+                    "ibori.framework.security.jwt.secret requires at least 32 bytes.");
+        }
+        this.secret = secret;
         this.secret = secret;
     }
 

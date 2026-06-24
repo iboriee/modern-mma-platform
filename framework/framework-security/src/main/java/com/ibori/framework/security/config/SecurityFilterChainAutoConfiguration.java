@@ -13,12 +13,17 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import java.util.List;
+
 @AutoConfiguration(before = SecurityFilterAutoConfiguration.class)
 public class SecurityFilterChainAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtProvider jwtProvider) throws Exception {
+    public SecurityFilterChain securityFilterChain(
+            HttpSecurity http,
+            JwtProvider jwtProvider,
+            List<SecurityFilterChainExtension> extensions) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -48,12 +53,19 @@ public class SecurityFilterChainAutoConfiguration {
                                 """);
                         })
                 )
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/actuator/health", "/error").permitAll()
-                        .anyRequest().authenticated()
-                )
+                .authorizeHttpRequests(auth -> {
+                    auth.requestMatchers("/actuator/health", "/error").permitAll();
+                    for(SecurityFilterChainExtension extension : extensions) {
+                        auth.requestMatchers(extension.publicPatterns()).permitAll();
+                    }
+                    auth.anyRequest().authenticated();
+
+                })
                 .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class);
 
+            for(SecurityFilterChainExtension extension : extensions) {
+                extension.configure(http);
+            }
         return http.build();
     }
 }

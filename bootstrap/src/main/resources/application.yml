@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: modern-mma-platform
+  profiles:
+    active: local   # 기본은 로컬
+
+  jpa:
+    hibernate:
+      ddl-auto: validate   # 운영 기본값 — 스키마 자동 변경 금지
+    open-in-view: false
+
+ibori:
+  framework:
+    security:
+      jwt:
+        secret: ${JWT_SECRET}   # 환경변수로 주입 강제
+    cache:
+      default-ttl: 10m
+    kafka:
+      backoff:
+        interval: 1000
+        max-attempts: 3

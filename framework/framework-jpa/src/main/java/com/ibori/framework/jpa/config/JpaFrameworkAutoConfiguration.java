@@ -3,6 +3,7 @@ package com.ibori.framework.jpa.config;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.AuditorAware;
@@ -22,6 +23,7 @@ public class JpaFrameworkAutoConfiguration {
      * todo: security 모듈 구현 시 토큰에서 가저오도록 수정, fallback 구조 고려
      */
     @Bean
+    //@ConditionalOnMissingBean(AuditorAware.class)
     public AuditorAware<String> auditorProvider() {
         return () -> Optional.of("SYSTEM");
     }

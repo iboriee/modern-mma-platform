@@ -1,5 +1,6 @@
 package com.ibori.mma.order.domain;
 
+import com.ibori.framework.jpa.entity.BaseEntity;
 import com.ibori.framework.jpa.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -9,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Table(name = "orders")
 @NoArgsConstructor
-public class Order extends BaseTimeEntity {
+public class Order extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

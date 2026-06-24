@@ -3,3 +3,10 @@ spring:
     hibernate:
       ddl-auto: create-drop
     show-sql: true
+ibori:
+  framework:
+    security:
+      jwt:
+        secret: "this-is-a-secure-test-secret-key-32bytes-long"
+        access-token-ttl: 30m
+        refresh-token-ttl: 14d
